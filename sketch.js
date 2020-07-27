@@ -1,10 +1,10 @@
 var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
-var packageBody,ground
+var packageBody,ground;
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
-
+const Render = Matter.Render;
 function preload()
 {
 	helicopterIMG=loadImage("helicopter.png")
@@ -24,42 +24,54 @@ function setup() {
 	helicopterSprite.addImage(helicopterIMG)
 	helicopterSprite.scale=0.6
 
-	groundSprite=createSprite(width/2, height-35, width,10);
+	groundSprite=createSprite(width/2, height, width,20);
 	groundSprite.shapeColor=color(255)
 
 
 	engine = Engine.create();
 	world = engine.world;
 
-	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:3, isStatic:true});
+	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:0.8, isStatic:true,friction:0.1});
 	World.add(world, packageBody);
 	
-
+	box1=Bodies.rectangle(300,height-50,200,20, {isStatic:true})
+	World.add(world, box1);
+	box2=Bodies.rectangle(500,height-50,200,20, {isStatic:true})
+	World.add(world, box2);
+	box3=Bodies.rectangle(400,height-15,200,20, {isStatic:true})
+	World.add(world, box3);
+	
 	//Create a Ground
-	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
- 	World.add(world, ground);
-
+	//ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
+ 	//World.add(world, ground);
 
 	Engine.run(engine);
-  
 }
 
 
 function draw() {
-  rectMode(CENTER);
-  background(0);
-  packageSprite.x= packageBody.position.x 
-  packageSprite.y= packageBody.position.y 
-  drawSprites();
- 
+	background(0);
+	Engine.update(engine);
+	rectMode(CENTER);
+	
+	//fill(255);
+	//rect(ground.position.x, ground.position.y,800,20);  
+	  
+	fill(255,0,0);
+	noStroke();
+  	rect(box1.position.x, box1.position.y, 10, 80);
+  	rect(box2.position.x, box2.position.y, 10, 80);
+  	rect(box3.position.x, box3.position.y, 200, 10);
+	
+	packageSprite.x= packageBody.position.x  
+	packageSprite.y= packageBody.position.y;
+	drawSprites();
 }
+
 
 function keyPressed() {
  if (keyCode === DOWN_ARROW) {
-    // Look at the hints in the document and understand how to make the package body fall only on
-    
+	Matter.Body.setStatic(packageBody,false);
+    Matter.Body.gravity=5
   }
 }
-
-
-
